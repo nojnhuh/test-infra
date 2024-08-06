@@ -37,43 +37,6 @@ generate_presubmit_annotations() {
 EOF
 }
 
-generate_preset_labels() {
-  indent=${1}
-  capz_ref="${2}"
-  if [[ "${capz_ref}" == "main" ]]; then
-    creds=$(cat <<EOF
-  preset-azure-cred-wi: "true"
-EOF
-  )
-  else
-    creds=$(cat <<EOF
-  preset-azure-cred-only: "true"
-  preset-azure-capz-sa-cred: "true"
-EOF
-  )
-  fi
-  cat << EOF | pr -to $indent
-labels:
-  preset-dind-enabled: "true"
-  preset-kind-volume-mounts: "true"
-  preset-azure-anonymous-pull: "true"
-${creds}
-EOF
-}
-
-generate_serviceaccount_name() {
-  indent=${1}
-  capz_ref="${2}"
-  if [[ "${capz_ref}" == "main" ]]; then
-    serviceaccount="prowjob-default-sa"
-  else
-    serviceaccount="default"
-  fi
-  cat << EOF | pr -to $indent
-serviceAccountName: ${serviceaccount}
-EOF
-}
-
 # we need to define the full image URL so it can be autobumped
 tmp="gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240803-cf1183f2db-master"
 kubekins_e2e_image="${tmp/\-master/}"
@@ -83,7 +46,7 @@ installCSIAzureFileDrivers=" ./deploy/install-driver.sh master local &&"
 for release in "$@"; do
   output="${dir}/release-${release}.yaml"
   kubernetes_version="latest"
-  capz_release="release-1.15"
+  capz_release="release-1.16"
 
   if [[ "${release}" == "master" ]]; then
     branch=$(echo -e 'master # TODO(releng): Remove once repo default branch has been renamed\n      - main')
@@ -103,6 +66,7 @@ for release in "$@"; do
 presubmits:
   kubernetes/kubernetes:
   - name: pull-kubernetes-e2e-capz-azure-disk
+    cluster: eks-prow-build-cluster
     decorate: true
     always_run: false
     optional: true
@@ -110,7 +74,10 @@ presubmits:
     path_alias: k8s.io/kubernetes
     branches:
       - ${branch}
-$(generate_preset_labels 4 ${capz_release})
+    labels:
+      preset-dind-enabled: "true"
+      preset-kind-volume-mounts: "true"
+      preset-azure-community: "true"
     extra_refs:
       - org: kubernetes-sigs
         repo: cluster-api-provider-azure
@@ -126,7 +93,7 @@ $(generate_preset_labels 4 ${capz_release})
         base_ref: ${ccm_branch}
         path_alias: sigs.k8s.io/cloud-provider-azure
     spec:
-$(generate_serviceaccount_name 6 ${capz_release})
+      serviceAccountName: azure
       containers:
         - image: ${kubekins_e2e_image}-master
           command:
@@ -144,11 +111,15 @@ $(generate_serviceaccount_name 6 ${capz_release})
           securityContext:
             privileged: true
           resources:
+            limits:
+              cpu: 6
+              memory: 9Gi
             requests:
-              cpu: 1
-              memory: "4Gi"
+              cpu: 6
+              memory: 9Gi
 $(generate_presubmit_annotations ${branch_name} pull-kubernetes-e2e-capz-azure-disk)
   - name: pull-kubernetes-e2e-capz-azure-disk-vmss
+    cluster: eks-prow-build-cluster
     decorate: true
     always_run: false
     optional: true
@@ -156,7 +127,10 @@ $(generate_presubmit_annotations ${branch_name} pull-kubernetes-e2e-capz-azure-d
     path_alias: k8s.io/kubernetes
     branches:
       - ${branch}
-$(generate_preset_labels 4 ${capz_release})
+    labels:
+      preset-dind-enabled: "true"
+      preset-kind-volume-mounts: "true"
+      preset-azure-community: "true"
     extra_refs:
       - org: kubernetes-sigs
         repo: cluster-api-provider-azure
@@ -172,7 +146,7 @@ $(generate_preset_labels 4 ${capz_release})
         base_ref: ${ccm_branch}
         path_alias: sigs.k8s.io/cloud-provider-azure
     spec:
-$(generate_serviceaccount_name 6 ${capz_release})
+      serviceAccountName: azure
       containers:
         - image: ${kubekins_e2e_image}-master
           command:
@@ -192,11 +166,15 @@ $(generate_serviceaccount_name 6 ${capz_release})
           securityContext:
             privileged: true
           resources:
+            limits:
+              cpu: 6
+              memory: 9Gi
             requests:
-              cpu: 1
-              memory: "4Gi"
+              cpu: 6
+              memory: 9Gi
 $(generate_presubmit_annotations ${branch_name} pull-kubernetes-e2e-capz-azure-disk-vmss)
   - name: pull-kubernetes-e2e-capz-azure-file
+    cluster: eks-prow-build-cluster
     decorate: true
     always_run: false
     optional: true
@@ -204,7 +182,10 @@ $(generate_presubmit_annotations ${branch_name} pull-kubernetes-e2e-capz-azure-d
     path_alias: k8s.io/kubernetes
     branches:
       - ${branch}
-$(generate_preset_labels 4 ${capz_release})
+    labels:
+      preset-dind-enabled: "true"
+      preset-kind-volume-mounts: "true"
+      preset-azure-community: "true"
     extra_refs:
       - org: kubernetes-sigs
         repo: cluster-api-provider-azure
@@ -220,7 +201,7 @@ $(generate_preset_labels 4 ${capz_release})
         base_ref: ${ccm_branch}
         path_alias: sigs.k8s.io/cloud-provider-azure
     spec:
-$(generate_serviceaccount_name 6 ${capz_release})
+      serviceAccountName: azure
       containers:
         - image: ${kubekins_e2e_image}-master
           command:
@@ -239,11 +220,15 @@ $(generate_serviceaccount_name 6 ${capz_release})
           securityContext:
             privileged: true
           resources:
+            limits:
+              cpu: 6
+              memory: 9Gi
             requests:
-              cpu: 1
-              memory: "4Gi"
+              cpu: 6
+              memory: 9Gi
 $(generate_presubmit_annotations ${branch_name} pull-kubernetes-e2e-capz-azure-file)
   - name: pull-kubernetes-e2e-capz-azure-file-vmss
+    cluster: eks-prow-build-cluster
     decorate: true
     always_run: false
     optional: true
@@ -251,7 +236,10 @@ $(generate_presubmit_annotations ${branch_name} pull-kubernetes-e2e-capz-azure-f
     path_alias: k8s.io/kubernetes
     branches:
       - ${branch}
-$(generate_preset_labels 4 ${capz_release})
+    labels:
+      preset-dind-enabled: "true"
+      preset-kind-volume-mounts: "true"
+      preset-azure-community: "true"
     extra_refs:
       - org: kubernetes-sigs
         repo: cluster-api-provider-azure
@@ -267,7 +255,7 @@ $(generate_preset_labels 4 ${capz_release})
         base_ref: ${ccm_branch}
         path_alias: sigs.k8s.io/cloud-provider-azure
     spec:
-$(generate_serviceaccount_name 6 ${capz_release})
+      serviceAccountName: azure
       containers:
         - image: ${kubekins_e2e_image}-master
           command:
@@ -288,11 +276,15 @@ $(generate_serviceaccount_name 6 ${capz_release})
           securityContext:
             privileged: true
           resources:
+            limits:
+              cpu: 6
+              memory: 9Gi
             requests:
-              cpu: 1
-              memory: "4Gi"
+              cpu: 6
+              memory: 9Gi
 $(generate_presubmit_annotations ${branch_name} pull-kubernetes-e2e-capz-azure-file-vmss)
   - name: pull-kubernetes-e2e-capz-conformance
+    cluster: eks-prow-build-cluster
     decorate: true
     always_run: false
     optional: true
@@ -300,7 +292,10 @@ $(generate_presubmit_annotations ${branch_name} pull-kubernetes-e2e-capz-azure-f
     path_alias: k8s.io/kubernetes
     branches:
       - ${branch}
-$(generate_preset_labels 4 ${capz_release})
+    labels:
+      preset-dind-enabled: "true"
+      preset-kind-volume-mounts: "true"
+      preset-azure-community: "true"
     extra_refs:
     - org: kubernetes-sigs
       repo: cluster-api-provider-azure
@@ -312,7 +307,7 @@ $(generate_preset_labels 4 ${capz_release})
       base_ref: ${ccm_branch}
       path_alias: sigs.k8s.io/cloud-provider-azure
     spec:
-$(generate_serviceaccount_name 6 ${capz_release})
+      serviceAccountName: azure
       containers:
       - image: ${kubekins_e2e_image}-master
         command:
@@ -321,9 +316,12 @@ $(generate_serviceaccount_name 6 ${capz_release})
         securityContext:
           privileged: true
         resources:
+          limits:
+            cpu: 6
+            memory: 9Gi
           requests:
-            cpu: 1
-            memory: "4Gi"
+            cpu: 6
+            memory: 9Gi
         env:
         - name: KUBETEST_CONF_PATH
           value: /home/prow/go/src/sigs.k8s.io/cluster-api-provider-azure/test/e2e/data/kubetest/conformance-fast.yaml
@@ -333,10 +331,14 @@ $(generate_presubmit_annotations ${branch_name} pull-kubernetes-e2e-capz-conform
 periodics:
 - interval: 3h
   name: capz-conformance-${release/./-}
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
-$(generate_preset_labels 2 ${capz_periodic_branch_name})
+  labels:
+    preset-dind-enabled: "true"
+    preset-kind-volume-mounts: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
@@ -349,7 +351,7 @@ $(generate_preset_labels 2 ${capz_periodic_branch_name})
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-$(generate_serviceaccount_name 4 ${capz_periodic_branch_name})
+    serviceAccountName: azure
     containers:
     - image: ${kubekins_e2e_image}-master
       command:
@@ -365,9 +367,12 @@ $(generate_serviceaccount_name 4 ${capz_periodic_branch_name})
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-${release}-signal
     testgrid-tab-name: capz-conformance
@@ -376,10 +381,14 @@ $(generate_serviceaccount_name 4 ${capz_periodic_branch_name})
 
 - interval: 24h
   name: capz-conformance-ipv6-${release/./-}
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
-$(generate_preset_labels 2 ${capz_periodic_branch_name})
+  labels:
+    preset-dind-enabled: "true"
+    preset-kind-volume-mounts: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
@@ -392,7 +401,7 @@ $(generate_preset_labels 2 ${capz_periodic_branch_name})
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-$(generate_serviceaccount_name 4 ${capz_periodic_branch_name})
+    serviceAccountName: azure
     containers:
     - image: ${kubekins_e2e_image}-master
       command:
@@ -410,9 +419,12 @@ $(generate_serviceaccount_name 4 ${capz_periodic_branch_name})
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-${release}-signal
     testgrid-tab-name: capz-conformance-ipv6
@@ -421,10 +433,14 @@ $(generate_serviceaccount_name 4 ${capz_periodic_branch_name})
 
 - interval: 24h
   name: capz-conformance-dual-stack-${release/./-}
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
-$(generate_preset_labels 2 ${capz_periodic_branch_name})
+  labels:
+    preset-dind-enabled: "true"
+    preset-kind-volume-mounts: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
@@ -437,7 +453,7 @@ $(generate_preset_labels 2 ${capz_periodic_branch_name})
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-$(generate_serviceaccount_name 4 ${capz_periodic_branch_name})
+    serviceAccountName: azure
     containers:
     - image: ${kubekins_e2e_image}-master
       command:
@@ -455,9 +471,12 @@ $(generate_serviceaccount_name 4 ${capz_periodic_branch_name})
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-${release}-signal
     testgrid-tab-name: capz-conformance-dual-stack
@@ -466,10 +485,14 @@ $(generate_serviceaccount_name 4 ${capz_periodic_branch_name})
 
 - interval: 24h
   name: capz-azure-file-${release/./-}
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
-$(generate_preset_labels 2 ${capz_periodic_branch_name})
+  labels:
+    preset-dind-enabled: "true"
+    preset-kind-volume-mounts: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
@@ -489,7 +512,7 @@ $(generate_preset_labels 2 ${capz_periodic_branch_name})
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-$(generate_serviceaccount_name 4 ${capz_periodic_branch_name})
+    serviceAccountName: azure
     containers:
     - image: ${kubekins_e2e_image}-master
       command:
@@ -510,9 +533,12 @@ $(generate_serviceaccount_name 4 ${capz_periodic_branch_name})
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-${release}-signal
     testgrid-tab-name: capz-azure-file
@@ -521,10 +547,14 @@ $(generate_serviceaccount_name 4 ${capz_periodic_branch_name})
 
 - interval: 24h
   name: capz-azure-file-vmss-${release/./-}
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
-$(generate_preset_labels 2 ${capz_periodic_branch_name})
+  labels:
+    preset-dind-enabled: "true"
+    preset-kind-volume-mounts: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
@@ -544,7 +574,7 @@ $(generate_preset_labels 2 ${capz_periodic_branch_name})
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-$(generate_serviceaccount_name 4 ${capz_periodic_branch_name})
+    serviceAccountName: azure
     containers:
     - image: ${kubekins_e2e_image}-master
       command:
@@ -567,9 +597,12 @@ $(generate_serviceaccount_name 4 ${capz_periodic_branch_name})
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-${release}-signal
     testgrid-tab-name: capz-azure-file-vmss
@@ -578,10 +611,14 @@ $(generate_serviceaccount_name 4 ${capz_periodic_branch_name})
 
 - interval: 24h
   name: capz-azure-disk-${release/./-}
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
-$(generate_preset_labels 2 ${capz_periodic_branch_name})
+  labels:
+    preset-dind-enabled: "true"
+    preset-kind-volume-mounts: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
@@ -601,7 +638,7 @@ $(generate_preset_labels 2 ${capz_periodic_branch_name})
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-$(generate_serviceaccount_name 4 ${capz_periodic_branch_name})
+    serviceAccountName: azure
     containers:
     - image: ${kubekins_e2e_image}-master
       command:
@@ -621,9 +658,12 @@ $(generate_serviceaccount_name 4 ${capz_periodic_branch_name})
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-${release}-signal
     testgrid-tab-name: capz-azure-disk
@@ -632,10 +672,14 @@ $(generate_serviceaccount_name 4 ${capz_periodic_branch_name})
 
 - interval: 24h
   name: capz-azure-disk-vmss-${release/./-}
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
-$(generate_preset_labels 2 ${capz_periodic_branch_name})
+  labels:
+    preset-dind-enabled: "true"
+    preset-kind-volume-mounts: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
@@ -655,7 +699,7 @@ $(generate_preset_labels 2 ${capz_periodic_branch_name})
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-$(generate_serviceaccount_name 4 ${capz_periodic_branch_name})
+    serviceAccountName: azure
     containers:
     - image: ${kubekins_e2e_image}-master
       command:
@@ -677,9 +721,12 @@ $(generate_serviceaccount_name 4 ${capz_periodic_branch_name})
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-${release}-signal
     testgrid-tab-name: capz-azure-disk-vmss
@@ -691,10 +738,14 @@ EOF
 # the "capz-release-*" jobs below validate the health of cloud-provider-azure:master against a stable release of capz
 - interval: 24h
   name: capz-release-conformance-master
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
-$(generate_preset_labels 2 ${capz_release})
+  labels:
+    preset-dind-enabled: "true"
+    preset-kind-volume-mounts: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
@@ -707,7 +758,7 @@ $(generate_preset_labels 2 ${capz_release})
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-$(generate_serviceaccount_name 4 ${capz_release})
+    serviceAccountName: azure
     containers:
     - image: ${kubekins_e2e_image}-master
       command:
@@ -723,9 +774,12 @@ $(generate_serviceaccount_name 4 ${capz_release})
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-master-signal
     testgrid-tab-name: capz-release-conformance
@@ -734,10 +788,14 @@ $(generate_serviceaccount_name 4 ${capz_release})
 
 - interval: 24h
   name: capz-release-azure-file-master
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
-$(generate_preset_labels 2 ${capz_release})
+  labels:
+    preset-dind-enabled: "true"
+    preset-kind-volume-mounts: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
@@ -757,7 +815,7 @@ $(generate_preset_labels 2 ${capz_release})
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-$(generate_serviceaccount_name 4 ${capz_release})
+    serviceAccountName: azure
     containers:
     - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240803-cf1183f2db-master
       command:
@@ -778,9 +836,12 @@ $(generate_serviceaccount_name 4 ${capz_release})
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-master-signal
     testgrid-tab-name: capz-release-azure-file
@@ -789,10 +850,14 @@ $(generate_serviceaccount_name 4 ${capz_release})
 
 - interval: 24h
   name: capz-release-azure-file-vmss-master
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
-$(generate_preset_labels 2 ${capz_release})
+  labels:
+    preset-dind-enabled: "true"
+    preset-kind-volume-mounts: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
@@ -812,7 +877,7 @@ $(generate_preset_labels 2 ${capz_release})
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-$(generate_serviceaccount_name 4 ${capz_release})
+    serviceAccountName: azure
     containers:
     - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240803-cf1183f2db-master
       command:
@@ -835,9 +900,12 @@ $(generate_serviceaccount_name 4 ${capz_release})
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-master-signal
     testgrid-tab-name: capz-release-azure-file-vmss
@@ -846,10 +914,14 @@ $(generate_serviceaccount_name 4 ${capz_release})
 
 - interval: 24h
   name: capz-release-azure-disk-master
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
-$(generate_preset_labels 2 ${capz_release})
+  labels:
+    preset-dind-enabled: "true"
+    preset-kind-volume-mounts: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
@@ -869,7 +941,7 @@ $(generate_preset_labels 2 ${capz_release})
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-$(generate_serviceaccount_name 4 ${capz_release})
+    serviceAccountName: azure
     containers:
     - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240803-cf1183f2db-master
       command:
@@ -889,9 +961,12 @@ $(generate_serviceaccount_name 4 ${capz_release})
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-master-signal
     testgrid-tab-name: capz-release-azure-disk
@@ -900,10 +975,14 @@ $(generate_serviceaccount_name 4 ${capz_release})
 
 - interval: 24h
   name: capz-release-azure-disk-vmss-master
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
-$(generate_preset_labels 2 ${capz_release})
+  labels:
+    preset-dind-enabled: "true"
+    preset-kind-volume-mounts: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
@@ -923,7 +1002,7 @@ $(generate_preset_labels 2 ${capz_release})
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-$(generate_serviceaccount_name 4 ${capz_release})
+    serviceAccountName: azure
     containers:
     - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240803-cf1183f2db-master
       command:
@@ -945,9 +1024,12 @@ $(generate_serviceaccount_name 4 ${capz_release})
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-master-signal
     testgrid-tab-name: capz-release-azure-disk-vmss

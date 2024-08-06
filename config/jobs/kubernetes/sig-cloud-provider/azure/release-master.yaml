@@ -2,6 +2,7 @@
 presubmits:
   kubernetes/kubernetes:
   - name: pull-kubernetes-e2e-capz-azure-disk
+    cluster: eks-prow-build-cluster
     decorate: true
     always_run: false
     optional: true
@@ -13,13 +14,11 @@ presubmits:
     labels:
       preset-dind-enabled: "true"
       preset-kind-volume-mounts: "true"
-      preset-azure-anonymous-pull: "true"
-      preset-azure-cred-only: "true"
-      preset-azure-capz-sa-cred: "true"
+      preset-azure-community: "true"
     extra_refs:
       - org: kubernetes-sigs
         repo: cluster-api-provider-azure
-        base_ref: release-1.15
+        base_ref: release-1.16
         path_alias: sigs.k8s.io/cluster-api-provider-azure
         workdir: true
       - org: kubernetes-sigs
@@ -31,7 +30,7 @@ presubmits:
         base_ref: master
         path_alias: sigs.k8s.io/cloud-provider-azure
     spec:
-      serviceAccountName: default
+      serviceAccountName: azure
       containers:
         - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240803-cf1183f2db-master
           command:
@@ -49,15 +48,19 @@ presubmits:
           securityContext:
             privileged: true
           resources:
+            limits:
+              cpu: 6
+              memory: 9Gi
             requests:
-              cpu: 1
-              memory: "4Gi"
+              cpu: 6
+              memory: 9Gi
     annotations:
       testgrid-dashboards: provider-azure-presubmit
       testgrid-tab-name: pull-kubernetes-e2e-capz-azure-disk
       testgrid-alert-email: kubernetes-provider-azure@googlegroups.com
       testgrid-num-columns-recent: '30'
   - name: pull-kubernetes-e2e-capz-azure-disk-vmss
+    cluster: eks-prow-build-cluster
     decorate: true
     always_run: false
     optional: true
@@ -69,13 +72,11 @@ presubmits:
     labels:
       preset-dind-enabled: "true"
       preset-kind-volume-mounts: "true"
-      preset-azure-anonymous-pull: "true"
-      preset-azure-cred-only: "true"
-      preset-azure-capz-sa-cred: "true"
+      preset-azure-community: "true"
     extra_refs:
       - org: kubernetes-sigs
         repo: cluster-api-provider-azure
-        base_ref: release-1.15
+        base_ref: release-1.16
         path_alias: sigs.k8s.io/cluster-api-provider-azure
         workdir: true
       - org: kubernetes-sigs
@@ -87,7 +88,7 @@ presubmits:
         base_ref: master
         path_alias: sigs.k8s.io/cloud-provider-azure
     spec:
-      serviceAccountName: default
+      serviceAccountName: azure
       containers:
         - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240803-cf1183f2db-master
           command:
@@ -107,15 +108,19 @@ presubmits:
           securityContext:
             privileged: true
           resources:
+            limits:
+              cpu: 6
+              memory: 9Gi
             requests:
-              cpu: 1
-              memory: "4Gi"
+              cpu: 6
+              memory: 9Gi
     annotations:
       testgrid-dashboards: provider-azure-presubmit
       testgrid-tab-name: pull-kubernetes-e2e-capz-azure-disk-vmss
       testgrid-alert-email: kubernetes-provider-azure@googlegroups.com
       testgrid-num-columns-recent: '30'
   - name: pull-kubernetes-e2e-capz-azure-file
+    cluster: eks-prow-build-cluster
     decorate: true
     always_run: false
     optional: true
@@ -127,13 +132,11 @@ presubmits:
     labels:
       preset-dind-enabled: "true"
       preset-kind-volume-mounts: "true"
-      preset-azure-anonymous-pull: "true"
-      preset-azure-cred-only: "true"
-      preset-azure-capz-sa-cred: "true"
+      preset-azure-community: "true"
     extra_refs:
       - org: kubernetes-sigs
         repo: cluster-api-provider-azure
-        base_ref: release-1.15
+        base_ref: release-1.16
         path_alias: sigs.k8s.io/cluster-api-provider-azure
         workdir: true
       - org: kubernetes-sigs
@@ -145,7 +148,7 @@ presubmits:
         base_ref: master
         path_alias: sigs.k8s.io/cloud-provider-azure
     spec:
-      serviceAccountName: default
+      serviceAccountName: azure
       containers:
         - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240803-cf1183f2db-master
           command:
@@ -164,15 +167,19 @@ presubmits:
           securityContext:
             privileged: true
           resources:
+            limits:
+              cpu: 6
+              memory: 9Gi
             requests:
-              cpu: 1
-              memory: "4Gi"
+              cpu: 6
+              memory: 9Gi
     annotations:
       testgrid-dashboards: provider-azure-presubmit
       testgrid-tab-name: pull-kubernetes-e2e-capz-azure-file
       testgrid-alert-email: kubernetes-provider-azure@googlegroups.com
       testgrid-num-columns-recent: '30'
   - name: pull-kubernetes-e2e-capz-azure-file-vmss
+    cluster: eks-prow-build-cluster
     decorate: true
     always_run: false
     optional: true
@@ -184,13 +191,11 @@ presubmits:
     labels:
       preset-dind-enabled: "true"
       preset-kind-volume-mounts: "true"
-      preset-azure-anonymous-pull: "true"
-      preset-azure-cred-only: "true"
-      preset-azure-capz-sa-cred: "true"
+      preset-azure-community: "true"
     extra_refs:
       - org: kubernetes-sigs
         repo: cluster-api-provider-azure
-        base_ref: release-1.15
+        base_ref: release-1.16
         path_alias: sigs.k8s.io/cluster-api-provider-azure
         workdir: true
       - org: kubernetes-sigs
@@ -202,7 +207,7 @@ presubmits:
         base_ref: master
         path_alias: sigs.k8s.io/cloud-provider-azure
     spec:
-      serviceAccountName: default
+      serviceAccountName: azure
       containers:
         - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240803-cf1183f2db-master
           command:
@@ -223,15 +228,19 @@ presubmits:
           securityContext:
             privileged: true
           resources:
+            limits:
+              cpu: 6
+              memory: 9Gi
             requests:
-              cpu: 1
-              memory: "4Gi"
+              cpu: 6
+              memory: 9Gi
     annotations:
       testgrid-dashboards: provider-azure-presubmit
       testgrid-tab-name: pull-kubernetes-e2e-capz-azure-file-vmss
       testgrid-alert-email: kubernetes-provider-azure@googlegroups.com
       testgrid-num-columns-recent: '30'
   - name: pull-kubernetes-e2e-capz-conformance
+    cluster: eks-prow-build-cluster
     decorate: true
     always_run: false
     optional: true
@@ -243,13 +252,11 @@ presubmits:
     labels:
       preset-dind-enabled: "true"
       preset-kind-volume-mounts: "true"
-      preset-azure-anonymous-pull: "true"
-      preset-azure-cred-only: "true"
-      preset-azure-capz-sa-cred: "true"
+      preset-azure-community: "true"
     extra_refs:
     - org: kubernetes-sigs
       repo: cluster-api-provider-azure
-      base_ref: release-1.15
+      base_ref: release-1.16
       path_alias: sigs.k8s.io/cluster-api-provider-azure
       workdir: true
     - org: kubernetes-sigs
@@ -257,7 +264,7 @@ presubmits:
       base_ref: master
       path_alias: sigs.k8s.io/cloud-provider-azure
     spec:
-      serviceAccountName: default
+      serviceAccountName: azure
       containers:
       - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240803-cf1183f2db-master
         command:
@@ -266,9 +273,12 @@ presubmits:
         securityContext:
           privileged: true
         resources:
+          limits:
+            cpu: 6
+            memory: 9Gi
           requests:
-            cpu: 1
-            memory: "4Gi"
+            cpu: 6
+            memory: 9Gi
         env:
         - name: KUBETEST_CONF_PATH
           value: /home/prow/go/src/sigs.k8s.io/cluster-api-provider-azure/test/e2e/data/kubetest/conformance-fast.yaml
@@ -282,14 +292,14 @@ presubmits:
 periodics:
 - interval: 3h
   name: capz-conformance-master
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
   labels:
     preset-dind-enabled: "true"
     preset-kind-volume-mounts: "true"
-    preset-azure-anonymous-pull: "true"
-    preset-azure-cred-wi: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
@@ -302,7 +312,7 @@ periodics:
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-    serviceAccountName: prowjob-default-sa
+    serviceAccountName: azure
     containers:
     - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240803-cf1183f2db-master
       command:
@@ -318,9 +328,12 @@ periodics:
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-master-signal
     testgrid-tab-name: capz-conformance
@@ -329,14 +342,14 @@ periodics:
 
 - interval: 24h
   name: capz-conformance-ipv6-master
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
   labels:
     preset-dind-enabled: "true"
     preset-kind-volume-mounts: "true"
-    preset-azure-anonymous-pull: "true"
-    preset-azure-cred-wi: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
@@ -349,7 +362,7 @@ periodics:
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-    serviceAccountName: prowjob-default-sa
+    serviceAccountName: azure
     containers:
     - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240803-cf1183f2db-master
       command:
@@ -367,9 +380,12 @@ periodics:
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-master-signal
     testgrid-tab-name: capz-conformance-ipv6
@@ -378,14 +394,14 @@ periodics:
 
 - interval: 24h
   name: capz-conformance-dual-stack-master
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
   labels:
     preset-dind-enabled: "true"
     preset-kind-volume-mounts: "true"
-    preset-azure-anonymous-pull: "true"
-    preset-azure-cred-wi: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
@@ -398,7 +414,7 @@ periodics:
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-    serviceAccountName: prowjob-default-sa
+    serviceAccountName: azure
     containers:
     - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240803-cf1183f2db-master
       command:
@@ -416,9 +432,12 @@ periodics:
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-master-signal
     testgrid-tab-name: capz-conformance-dual-stack
@@ -427,14 +446,14 @@ periodics:
 
 - interval: 24h
   name: capz-azure-file-master
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
   labels:
     preset-dind-enabled: "true"
     preset-kind-volume-mounts: "true"
-    preset-azure-anonymous-pull: "true"
-    preset-azure-cred-wi: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
@@ -454,7 +473,7 @@ periodics:
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-    serviceAccountName: prowjob-default-sa
+    serviceAccountName: azure
     containers:
     - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240803-cf1183f2db-master
       command:
@@ -475,9 +494,12 @@ periodics:
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-master-signal
     testgrid-tab-name: capz-azure-file
@@ -486,14 +508,14 @@ periodics:
 
 - interval: 24h
   name: capz-azure-file-vmss-master
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
   labels:
     preset-dind-enabled: "true"
     preset-kind-volume-mounts: "true"
-    preset-azure-anonymous-pull: "true"
-    preset-azure-cred-wi: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
@@ -513,7 +535,7 @@ periodics:
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-    serviceAccountName: prowjob-default-sa
+    serviceAccountName: azure
     containers:
     - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240803-cf1183f2db-master
       command:
@@ -536,9 +558,12 @@ periodics:
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-master-signal
     testgrid-tab-name: capz-azure-file-vmss
@@ -547,14 +572,14 @@ periodics:
 
 - interval: 24h
   name: capz-azure-disk-master
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
   labels:
     preset-dind-enabled: "true"
     preset-kind-volume-mounts: "true"
-    preset-azure-anonymous-pull: "true"
-    preset-azure-cred-wi: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
@@ -574,7 +599,7 @@ periodics:
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-    serviceAccountName: prowjob-default-sa
+    serviceAccountName: azure
     containers:
     - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240803-cf1183f2db-master
       command:
@@ -594,9 +619,12 @@ periodics:
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-master-signal
     testgrid-tab-name: capz-azure-disk
@@ -605,14 +633,14 @@ periodics:
 
 - interval: 24h
   name: capz-azure-disk-vmss-master
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
   labels:
     preset-dind-enabled: "true"
     preset-kind-volume-mounts: "true"
-    preset-azure-anonymous-pull: "true"
-    preset-azure-cred-wi: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
@@ -632,7 +660,7 @@ periodics:
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-    serviceAccountName: prowjob-default-sa
+    serviceAccountName: azure
     containers:
     - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240803-cf1183f2db-master
       command:
@@ -654,9 +682,12 @@ periodics:
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-master-signal
     testgrid-tab-name: capz-azure-disk-vmss
@@ -665,19 +696,18 @@ periodics:
 # the "capz-release-*" jobs below validate the health of cloud-provider-azure:master against a stable release of capz
 - interval: 24h
   name: capz-release-conformance-master
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
   labels:
     preset-dind-enabled: "true"
     preset-kind-volume-mounts: "true"
-    preset-azure-anonymous-pull: "true"
-    preset-azure-cred-only: "true"
-    preset-azure-capz-sa-cred: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
-    base_ref: release-1.15
+    base_ref: release-1.16
     path_alias: sigs.k8s.io/cluster-api-provider-azure
     workdir: true
   - org: kubernetes-sigs
@@ -686,7 +716,7 @@ periodics:
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-    serviceAccountName: default
+    serviceAccountName: azure
     containers:
     - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240803-cf1183f2db-master
       command:
@@ -702,9 +732,12 @@ periodics:
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-master-signal
     testgrid-tab-name: capz-release-conformance
@@ -713,19 +746,18 @@ periodics:
 
 - interval: 24h
   name: capz-release-azure-file-master
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
   labels:
     preset-dind-enabled: "true"
     preset-kind-volume-mounts: "true"
-    preset-azure-anonymous-pull: "true"
-    preset-azure-cred-only: "true"
-    preset-azure-capz-sa-cred: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
-    base_ref: release-1.15
+    base_ref: release-1.16
     path_alias: sigs.k8s.io/cluster-api-provider-azure
   - org: kubernetes-sigs
     repo: azurefile-csi-driver
@@ -741,7 +773,7 @@ periodics:
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-    serviceAccountName: default
+    serviceAccountName: azure
     containers:
     - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240803-cf1183f2db-master
       command:
@@ -762,9 +794,12 @@ periodics:
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-master-signal
     testgrid-tab-name: capz-release-azure-file
@@ -773,19 +808,18 @@ periodics:
 
 - interval: 24h
   name: capz-release-azure-file-vmss-master
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
   labels:
     preset-dind-enabled: "true"
     preset-kind-volume-mounts: "true"
-    preset-azure-anonymous-pull: "true"
-    preset-azure-cred-only: "true"
-    preset-azure-capz-sa-cred: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
-    base_ref: release-1.15
+    base_ref: release-1.16
     path_alias: sigs.k8s.io/cluster-api-provider-azure
   - org: kubernetes-sigs
     repo: azurefile-csi-driver
@@ -801,7 +835,7 @@ periodics:
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-    serviceAccountName: default
+    serviceAccountName: azure
     containers:
     - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240803-cf1183f2db-master
       command:
@@ -824,9 +858,12 @@ periodics:
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-master-signal
     testgrid-tab-name: capz-release-azure-file-vmss
@@ -835,19 +872,18 @@ periodics:
 
 - interval: 24h
   name: capz-release-azure-disk-master
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
   labels:
     preset-dind-enabled: "true"
     preset-kind-volume-mounts: "true"
-    preset-azure-anonymous-pull: "true"
-    preset-azure-cred-only: "true"
-    preset-azure-capz-sa-cred: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
-    base_ref: release-1.15
+    base_ref: release-1.16
     path_alias: sigs.k8s.io/cluster-api-provider-azure
   - org: kubernetes-sigs
     repo: azuredisk-csi-driver
@@ -863,7 +899,7 @@ periodics:
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-    serviceAccountName: default
+    serviceAccountName: azure
     containers:
     - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240803-cf1183f2db-master
       command:
@@ -883,9 +919,12 @@ periodics:
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-master-signal
     testgrid-tab-name: capz-release-azure-disk
@@ -894,19 +933,18 @@ periodics:
 
 - interval: 24h
   name: capz-release-azure-disk-vmss-master
+  cluster: eks-prow-build-cluster
   decorate: true
   decoration_config:
     timeout: 3h
   labels:
     preset-dind-enabled: "true"
     preset-kind-volume-mounts: "true"
-    preset-azure-anonymous-pull: "true"
-    preset-azure-cred-only: "true"
-    preset-azure-capz-sa-cred: "true"
+    preset-azure-community: "true"
   extra_refs:
   - org: kubernetes-sigs
     repo: cluster-api-provider-azure
-    base_ref: release-1.15
+    base_ref: release-1.16
     path_alias: sigs.k8s.io/cluster-api-provider-azure
   - org: kubernetes-sigs
     repo: azuredisk-csi-driver
@@ -922,7 +960,7 @@ periodics:
     path_alias: sigs.k8s.io/cloud-provider-azure
     workdir: false
   spec:
-    serviceAccountName: default
+    serviceAccountName: azure
     containers:
     - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240803-cf1183f2db-master
       command:
@@ -944,9 +982,12 @@ periodics:
       securityContext:
         privileged: true
       resources:
+        limits:
+          cpu: 6
+          memory: 9Gi
         requests:
-          cpu: 1
-          memory: "4Gi"
+          cpu: 6
+          memory: 9Gi
   annotations:
     testgrid-dashboards: provider-azure-master-signal
     testgrid-tab-name: capz-release-azure-disk-vmss
